@@ -142,7 +142,7 @@ const createLinkedAccountWithFetch = async (shop) => {
     }
 
     const accountDetails = {
-      email: "yatharthmathasw@gmail.com",
+      email: "yatharthmathassw@gmail.com",
       phone: shop.phone,
       type: "route",
       legal_business_name: shop.name,
