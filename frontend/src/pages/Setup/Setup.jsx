@@ -4,21 +4,6 @@ import { toast } from "react-hot-toast";
 import axios from "axios";
 import "./Setup.css";
 import { useNavigate } from "react-router-dom";
-import { initializeApp } from "firebase/app";
-import { getMessaging, getToken } from "firebase/messaging";
-
-// Initialize Firebase
-const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-};
-
-const firebaseApp = initializeApp(firebaseConfig);
-const messaging = getMessaging(firebaseApp);
 
 const Setup = () => {
   const { url, token, logout } = useContext(StoreContext);
@@ -46,8 +31,6 @@ const Setup = () => {
     accountNumber: "",
     ifscCode: "",
     bankName: "",
-    browserNotificationOptIn: true,
-    fcmToken: "",
   });
 
   const [shopImage, setShopImage] = useState(null);
@@ -93,36 +76,6 @@ const Setup = () => {
         setImagePreview(e.target.result);
       };
       reader.readAsDataURL(selectedImage);
-    }
-  };
-
-  const requestNotificationPermission = async () => {
-    try {
-      const permission = await Notification.requestPermission();
-      console.log(permission);
-      if (permission === "granted") {
-        const token = await getToken(messaging, {
-          vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
-        });
-        console.log("FCM Token:", token);
-        setFormData((prevData) => ({ ...prevData, fcmToken: token }));
-        return true;
-      } else {
-        setFormData((prevData) => ({
-          ...prevData,
-          browserNotificationOptIn: false,
-          fcmToken: "",
-        }));
-        return false;
-      }
-    } catch (error) {
-      console.error("Error requesting notification permission:", error);
-      setFormData((prevData) => ({
-        ...prevData,
-        browserNotificationOptIn: false,
-        fcmToken: "",
-      }));
-      return false;
     }
   };
 
@@ -251,18 +204,8 @@ const Setup = () => {
       return;
     }
 
-    // Final validation for all steps
     if (!validateStep(1) || !validateStep(2) || !validateStep(3)) {
       return;
-    }
-
-    // Request notification permission before proceeding with payment
-    if (formData.browserNotificationOptIn && !formData.fcmToken) {
-      const permissionGranted = await requestNotificationPermission();
-      if (!permissionGranted) {
-        toast.error("Please enable browser notifications to proceed.");
-        return;
-      }
     }
 
     const isRazorpayLoaded = await loadRazorpayScript();
@@ -325,7 +268,7 @@ const Setup = () => {
             console.error("Error verifying payment:", error);
             toast.error(
               error.response?.data?.message ||
-                "Payment verification failed. Please contact support."
+              "Payment verification failed. Please contact support."
             );
           }
         },
@@ -394,18 +337,16 @@ const Setup = () => {
         <div className="step-progress">
           <div className="step-indicator">
             <div
-              className={`step ${currentStep >= 1 ? "active" : ""} ${
-                currentStep > 1 ? "completed" : ""
-              }`}
+              className={`step ${currentStep >= 1 ? "active" : ""} ${currentStep > 1 ? "completed" : ""
+                }`}
             >
               <span className="step-number">1</span>
               <span className="step-label">Shop Profile</span>
             </div>
             <div className="step-line"></div>
             <div
-              className={`step ${currentStep >= 2 ? "active" : ""} ${
-                currentStep > 2 ? "completed" : ""
-              }`}
+              className={`step ${currentStep >= 2 ? "active" : ""} ${currentStep > 2 ? "completed" : ""
+                }`}
             >
               <span className="step-number">2</span>
               <span className="step-label">Documents & Bank</span>
@@ -611,12 +552,10 @@ const Setup = () => {
               <div className="subscription-section">
                 <div className="subscription-cards-setup">
                   <div
-                    className={`card ${
-                      formData.subscription === "149" ? "selected" : ""
-                    } popular`}
+                    className={`card ${formData.subscription === "149" ? "selected" : ""
+                      } `}
                     onClick={() => onSubscriptionSelect("149")}
                   >
-                    <div className="plan-badge popular-badge">Most Popular</div>
                     <div className="plan-price">
                       <span className="currency">₹</span>
                       <span className="amount">149</span>
@@ -624,32 +563,26 @@ const Setup = () => {
                     <div className="plan-duration">1 Month</div>
                   </div>
                   <div
-                    className={`card ${
-                      formData.subscription === "299" ? "selected" : ""
-                    }`}
+                    className={`card ${formData.subscription === "299" ? "selected" : ""
+                      }`}
                     onClick={() => onSubscriptionSelect("299")}
                   >
-                    <div className="plan-badge">Business</div>
                     <div className="plan-price">
                       <span className="currency">₹</span>
                       <span className="amount">299</span>
                     </div>
                     <div className="plan-duration">3 Months</div>
-                    <div className="savings">Save 33%</div>
                   </div>
                   <div
-                    className={`card ${
-                      formData.subscription === "599" ? "selected" : ""
-                    }`}
+                    className={`card ${formData.subscription === "599" ? "selected" : ""
+                      }`}
                     onClick={() => onSubscriptionSelect("599")}
                   >
-                    <div className="plan-badge">Premium</div>
                     <div className="plan-price">
                       <span className="currency">₹</span>
                       <span className="amount">599</span>
                     </div>
                     <div className="plan-duration">6 Months</div>
-                    <div className="savings">Save 50%</div>
                   </div>
                 </div>
 

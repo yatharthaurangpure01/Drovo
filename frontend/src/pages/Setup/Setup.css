@@ -284,11 +284,6 @@
   justify-content: center;
 }
 
-.card.popular {
-  border-color: #f59e0b;
-  transform: scale(1.05);
-}
-
 .card::before {
   content: "";
   position: absolute;
@@ -301,20 +296,6 @@
   transition: transform 0.3s ease;
 }
 
-.card.selected {
-  border-color: #667eea;
-  background: linear-gradient(
-    135deg,
-    rgba(102, 126, 234, 0.1) 0%,
-    rgba(118, 75, 162, 0.1) 100%
-  );
-  transform: translateY(-5px);
-  box-shadow: 0 15px 35px rgba(102, 126, 234, 0.25);
-}
-
-.card.selected::before {
-  transform: scaleX(1);
-}
 
 .card:hover {
   transform: translateY(-5px);

@@ -4,9 +4,8 @@ import Shop from "../models/ShopModel.js";
 import jwt from 'jsonwebtoken';
 import Razorpay from 'razorpay';
 import crypto from 'crypto';
-import nodemailer from 'nodemailer';
-import { sendEmailNotification, sendFCMNotification, sendWhatsAppNotification } from '../utils/notifications.js';
-
+import { sendEmailNotification } from '../utils/notifications.js';
+import nodemailer from 'nodemailer'
 
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
@@ -143,19 +142,9 @@ const verifyPayment = async (req, res) => {
     const itemsList = items
       .map(item => `${item.name} (x${item.quantity})`)
       .join(', ');
-    const notificationMessage = `New Online Order #${order._id} at ${shop.name}!\nItems: ${itemsList}\nTotal: ₹${(amount + deliveryCharge).toFixed(2)} (Online Payment)\nDelivery Address: ${address.street}, ${address.city}, ${address.state} ${address.postal_code}\nPlease check your admin panel to process the order.\nThank you for using Drovo!`;
     const shopAmount = (amount + deliveryCharge) * 0.99;
     const platformCommission = (amount + deliveryCharge) * 0.01;
     const emailBody = `Hello ${shop.name},\n\nA new order has been placed at your shop!\n\nOrder Details:\n- Order ID: ${order._id}\n- Items: ${itemsList}\n- Amount: ₹${amount}\n- Delivery Charge: ₹${deliveryCharge}\n- Payment Method: Online\n- Amount to Shopkeeper: ₹${shopAmount.toFixed(2)}\n- Platform Commission (1%): ₹${platformCommission.toFixed(2)}\n- User Address: ${address.street}\n\nPlease check your admin panel for more details.\n\nThank you for using Drovo!`;
-
-
-    if (shop.browserNotificationOptIn && shop.fcmToken) {
-      await sendFCMNotification(shop.fcmToken, 'New Order Placed', notificationMessage);
-    }
-
-    if (shop.phone) {
-      await sendWhatsAppNotification(Number.parseInt(shop.phone), notificationMessage);
-    }
 
     await sendEmailNotification(shop.email, 'New Order Placed', emailBody);
 
@@ -197,18 +186,9 @@ const placeOrder = async (req, res) => {
       .map(item => `${item.name} (x${item.quantity})`)
       .join(', ');
 
-    const notificationMessage = `New Online Order #${order._id} at ${shop.name}!\nItems: ${itemsList}\nTotal: ₹${(req.body.amount + req.body.deliveryCharge).toFixed(2)} (Cash on Delivery)\nDelivery Address: ${req.body.address.street}\nPlease check your admin panel to process the order.\nThank you for using Drovo!`;
     const shopAmount = (req.body.amount + req.body.deliveryCharge) * 0.99;
     const platformCommission = (req.body.amount + req.body.deliveryCharge) * 0.01;
     const emailBody = `Hello ${shop.name},\n\nA new order has been placed at your shop!\n\nOrder Details:\n- Amount: ₹${req.body.amount}\n- Delivery Charge: ₹${req.body.deliveryCharge}\n- Payment Method: Cash on Delivery\n- Amount to Shopkeeper: ₹${shopAmount.toFixed(2)}\n- Platform Commission (1%): ₹${platformCommission.toFixed(2)}\n- User Address: ${req.body.address.street}\n\nPlease remit the platform commission to Drovo at the end of the month.\n\nPlease check your admin panel for more details.\n\nThank you for using Drovo!`;
-
-    if (shop.browserNotificationOptIn && shop.fcmToken) {
-      await sendFCMNotification(shop.fcmToken, 'New Order Placed', notificationMessage);
-    }
-
-    if (shop.phone) {
-      await sendWhatsAppNotification(Number.parseInt(shop.phone), notificationMessage);
-    }
 
     await sendEmailNotification(shop.email, 'New Order Placed', emailBody);
 
@@ -329,12 +309,7 @@ const updateStatus = async (req, res) => {
     const itemsList = order.items
       .map(item => `${item.name} (x${item.quantity})`)
       .join(', ');
-    const notificationMessage = `Order #${order._id} Update from ${shop.name}!\nItems: ${itemsList}\nStatus: ${status}\nTotal: ₹${(order.amount + order.deliveryCharge).toFixed(2)} (${order.paymentMethod})\nDelivery Address: ${order.address.street}, ${order.address.city}, ${order.address.state} ${order.address.postal_code}\nContact the shop for any queries. Thank you for using Drovo!`;
     const emailBody = `Hello ${user.name},\n\nYour order from ${shop.name} has been updated!\n\nOrder Details:\n- Order ID: ${order._id}\n- Items: ${itemsList}\n- Status: ${status}\n- Amount: ₹${order.amount}\n- Delivery Charge: ₹${order.deliveryCharge}\n- Payment Method: ${order.paymentMethod}\n- Delivery Address: ${order.address.street}\n\nPlease contact the shop for any queries.\n\nThank you for using Drovo!`;
-
-    if (order.address.phone) {
-      await sendWhatsAppNotification(order.address.phone, notificationMessage);
-    }
 
     if (user.email) {
       await sendEmailNotification(user.email, `Order #${order._id} Status Update`, emailBody);

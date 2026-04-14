@@ -26,14 +26,13 @@ import TermsAndConditions from "./pages/TermsAndConditions/TermsAndConditions";
 import OrderDetails from "./pages/OrderDetails/OrderDetails";
 import EditPage from "./pages/EditPage/EditPage";
 import SeeAll from "./pages/SeeAll/SeeAll";
-import Chatbot from "./components/Chatbot/Chatbot";
 
 const App = () => {
   // Modified to handle initialState and initialRole parameters
   const [showLogin, setShowLogin] = useState(false);
   const [loginInitialState, setLoginInitialState] = useState("Login");
   const [loginInitialRole, setLoginInitialRole] = useState("user");
-  
+
   // Updated function to handle showing login popup with specific state and role
   const handleShowLogin = (show, initialState = "Login", initialRole = "user") => {
     setShowLogin(show);
@@ -54,7 +53,7 @@ const App = () => {
           <>
             <NavbarUser setShowLogin={handleShowLogin} />
             <Routes>
-              <Route path="/" element={<Home setShowLogin={handleShowLogin}/>} />
+              <Route path="/" element={<Home setShowLogin={handleShowLogin} />} />
               <Route
                 path="/cart"
                 element={<Cart setShowLogin={handleShowLogin} />}
@@ -71,7 +70,6 @@ const App = () => {
               <Route path="/category/:category" element={<SeeAll />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
-            <Chatbot />
           </>
         ) : (
           <>
