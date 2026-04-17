@@ -23,7 +23,7 @@ const LoginPopup = ({ setShowLogin, initialState = "Login", initialRole = "user"
         name: "",
         email: "",
         password: "",
-        role: initialRole, // Use initialRole prop instead of "user"
+        role: initialRole, 
     });
 
 
@@ -245,7 +245,6 @@ const LoginPopup = ({ setShowLogin, initialState = "Login", initialRole = "user"
                             className={`tab-button ${data.role === "user" ? "active" : ""}`}
                             onClick={() => setData(prev => ({ ...prev, role: "user" }))}
                         >
-                            {/* <span className="tab-icon">👤</span> */}
                             <span className="tab-text">User</span>
                         </button>
                         <button
@@ -253,7 +252,6 @@ const LoginPopup = ({ setShowLogin, initialState = "Login", initialRole = "user"
                             className={`tab-button ${data.role === "shop" ? "active" : ""}`}
                             onClick={() => setData(prev => ({ ...prev, role: "shop" }))}
                         >
-                            {/* <span className="tab-icon">🏪</span> */}
                             <span className="tab-text">Shop</span>
                         </button>
                     </div>

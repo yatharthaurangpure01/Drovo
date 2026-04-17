@@ -28,17 +28,16 @@ import EditPage from "./pages/EditPage/EditPage";
 import SeeAll from "./pages/SeeAll/SeeAll";
 
 const App = () => {
-  // Modified to handle initialState and initialRole parameters
   const [showLogin, setShowLogin] = useState(false);
   const [loginInitialState, setLoginInitialState] = useState("Login");
   const [loginInitialRole, setLoginInitialRole] = useState("user");
 
-  // Updated function to handle showing login popup with specific state and role
   const handleShowLogin = (show, initialState = "Login", initialRole = "user") => {
     setShowLogin(show);
     setLoginInitialState(initialState);
     setLoginInitialRole(initialRole);
   };
+
   const { userType, url } = useContext(StoreContext);
 
   return (

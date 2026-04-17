@@ -8,7 +8,6 @@ import { OAuth2Client } from 'google-auth-library'
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-// Helper to create token
 const createToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 }
@@ -21,22 +20,19 @@ const getUserProfile = async (req, res) => {
     }
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET); // Decode token to get user/shop ID
+        const decoded = jwt.verify(token, process.env.JWT_SECRET); 
         const { id } = decoded;
 
-        // Check if the ID corresponds to a user
         const user = await userModel.findById(id);
         if (user) {
             return res.json({ role: 'user', user });
         }
 
-        // Check if the ID corresponds to a shop
         const shop = await Shop.findById(id);
         if (shop) {
             return res.json({ role: 'shop', shop });
         }
 
-        // If neither user nor shop is found
         return res.status(404).json({ message: "No such user or shop found" });
     } catch (error) {
         console.error("Error verifying token:", error);
@@ -45,9 +41,8 @@ const getUserProfile = async (req, res) => {
 };
 
 
-// Login user or shop
 const loginUser = async (req, res) => {
-    const { email, password, role } = req.body;  // Get role from request body
+    const { email, password, role } = req.body;  
 
     try {
         let user;
@@ -95,7 +90,6 @@ const googleRegister = async (req, res) => {
             return res.json({ success: false, message: `${role === 'shop' ? 'Shop' : 'User'} already exists` });
         }
         
-        // Create user or shop
         let newUser;
         if (role === 'user') {
             newUser = new userModel({ name, email });
@@ -114,7 +108,6 @@ const googleRegister = async (req, res) => {
 };
 
 
-// Register user or shop
 const registerUser = async (req, res) => {
 
     const { name, email, password, role } = req.body;
@@ -133,7 +126,6 @@ const registerUser = async (req, res) => {
             return res.json({ success: false, message: `${role === 'shop' ? 'Shop' : 'User'} already exists` });
         }
 
-        // Validate email format and strong password
         if (!validator.isEmail(email)) {
             return res.json({ success: false, message: "Please enter a valid email" });
         }

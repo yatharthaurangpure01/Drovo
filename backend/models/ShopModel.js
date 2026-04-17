@@ -49,9 +49,6 @@ const ShopSchema = new mongoose.Schema({
         type: String
     },
     razorpayAccountId: { type: String },
-    browserNotificationOptIn: { type: Boolean, default: false },
-    fcmToken: { type: String, default: '' }
-
 });
 
 const Shop = mongoose.models.Shop || mongoose.model('Shop', ShopSchema);
