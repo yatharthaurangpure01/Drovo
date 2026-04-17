@@ -20,7 +20,7 @@ const getUserProfile = async (req, res) => {
     }
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET); 
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const { id } = decoded;
 
         const user = await userModel.findById(id);
@@ -42,7 +42,7 @@ const getUserProfile = async (req, res) => {
 
 
 const loginUser = async (req, res) => {
-    const { email, password, role } = req.body;  
+    const { email, password, role } = req.body;
 
     try {
         let user;
@@ -89,7 +89,7 @@ const googleRegister = async (req, res) => {
         if (exists) {
             return res.json({ success: false, message: `${role === 'shop' ? 'Shop' : 'User'} already exists` });
         }
-        
+
         let newUser;
         if (role === 'user') {
             newUser = new userModel({ name, email });
@@ -159,10 +159,12 @@ const verifyGoogleToken = async (token) => {
     try {
         const ticket = await client.verifyIdToken({
             idToken: token,
-            audience: process.env.GOOGLE_CLIENT_ID, // Client ID from Google Console
+            audience: process.env.GOOGLE_CLIENT_ID,
         });
+
         const payload = ticket.getPayload();
         return payload; // Contains user info (email, name, etc.)
+
     } catch (error) {
         console.error('Error verifying Google token:', error);
         return null;
@@ -174,34 +176,32 @@ const googleLogin = async (req, res) => {
     const { token, userType } = req.body;
 
     try {
-        // Use the Google token to get user details
-        const googleUserData = await verifyGoogleToken(token); // Your Google token verification logic
+        const googleUserData = await verifyGoogleToken(token);
 
         const { email } = googleUserData;
         let user;
 
-        // Check if the user exists as a user or a shop
         if (userType == "shop")
-            user = await Shop.findOne({ email }); // Find shop in the shop model
-        else 
-            user = await userModel.findOne({ email }); // Find user in the user model
-        
+            user = await Shop.findOne({ email });
+        else
+            user = await userModel.findOne({ email });
+
 
         if (user) {
-            // Generate JWT token
             const jwtToken = createToken(user._id);
 
-            // Send response back with user type and token
             return res.json({
                 success: true,
                 token: jwtToken,
-                isNewUser: false,  // Existing user, no need to perform signup
+                isNewUser: false,
             });
+
+
         } else {
             return res.status(200).json({
                 success: true,
                 message: 'Account not Found! Please Signup.',
-                isNewUser: true, // New user, need to perform signup
+                isNewUser: true,
             });
         }
     } catch (error) {
@@ -218,27 +218,25 @@ const otpStore = {};
 
 const sendOtpEmail = async (email, otp) => {
     try {
-        // Create a transporter object
+        //  a transporter object
         const transporter = nodemailer.createTransport({
-            service: 'Gmail', // You can use other services like Outlook, Yahoo, etc.
+            service: 'Gmail',
             auth: {
-                user: process.env.EMAIL_USER, // Replace with your email
-                pass: process.env.EMAIL_PASS, // Replace with your email password or app-specific password
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS,
             },
         });
 
-        // Compose the email
         const mailOptions = {
-            from: process.env.EMAIL_USER, // Sender address
-            to: email, // Recipient email address
-            subject: 'Your OTP for Registration', // Subject line
-            text: `Your OTP for registration is: ${otp}`, // Plain text body
-            html: `<p>Your OTP for registration is: <b>${otp}</b></p>`, // HTML body
+            from: process.env.EMAIL_USER, 
+            to: email, 
+            subject: 'Your OTP for Registration', 
+            text: `Your OTP for registration is: ${otp}`, 
+            html: `<p>Your OTP for registration is: <b>${otp}</b></p>`, 
         };
 
-        // Send the email
         const info = await transporter.sendMail(mailOptions);
-        console.log('Email sent: %s', info.messageId);
+        console.log('Email sent: ', info.messageId);
 
         return true;
     } catch (error) {
@@ -256,7 +254,6 @@ const sendOtp = async (req, res) => {
         existingShop = await Shop.findOne({ email });
 
         if (existingShop) {
-            // If the shop exists, check the isSetupComplete flag
             if (existingShop.isSetupComplete) {
                 return res.json({
                     success: false,
@@ -265,7 +262,6 @@ const sendOtp = async (req, res) => {
             }
         }
 
-        // Validate email format and strong password
         if (!validator.isEmail(email)) {
             return res.json({ success: false, message: "Please enter a valid email" });
         }
@@ -274,13 +270,10 @@ const sendOtp = async (req, res) => {
             return res.json({ success: false, message: "Please enter a strong password" });
         }
 
-        // Generate a random 6-digit OTP
         const otp = Math.floor(100000 + Math.random() * 900000);
 
-        // Store OTP in memory or a temporary database (better approach)
         otpStore[email] = otp;
 
-        // Send OTP via email
         await sendOtpEmail(email, otp);
         res.json({ success: true, message: 'OTP sent to your email.' });
     } catch (error) {
@@ -292,42 +285,33 @@ const sendOtp = async (req, res) => {
 const verifyOtp = async (req, res) => {
     const { email, otp, name, password } = req.body;
 
-    // Check if OTP matches
     if (otpStore[email] && otpStore[email] == otp) {
         try {
-            // Check if the shop already exists
             let shop = await Shop.findOne({ email });
 
             if (shop) {
-                // If the shop exists, check if setup is incomplete
                 if (!shop.isSetupComplete) {
-                    // Update shop details and set `isSetupComplete` to true
-                    shop.name = name; // Update name if necessary
-                    shop.password = await bcrypt.hash(password, 10); // Hash the new password
+                    shop.name = name; 
+                    shop.password = await bcrypt.hash(password, 10); 
 
                     await shop.save();
 
-                    // Clear OTP from the store
                     delete otpStore[email];
 
-                    // Generate a token
                     const token = createToken(shop._id);
 
-                    // Send a successful response with the token
                     return res.json({
                         success: true,
                         message: 'Shop registered successfully.',
                         token,
                     });
                 } else {
-                    // If setup is already complete, return an error
                     return res.status(400).json({
                         success: false,
                         message: 'Shop already exists.',
                     });
                 }
             } else {
-                // If no shop exists, create a new one
                 const hashedPassword = await bcrypt.hash(password, 10);
 
                 const newShop = new Shop({
@@ -338,13 +322,10 @@ const verifyOtp = async (req, res) => {
 
                 shop = await newShop.save();
 
-                // Clear OTP from the store
                 delete otpStore[email];
 
-                // Generate a token
                 const token = createToken(shop._id);
 
-                // Send a successful response with the token
                 return res.json({
                     success: true,
                     message: 'Shop registered successfully.',
@@ -359,7 +340,6 @@ const verifyOtp = async (req, res) => {
             });
         }
     } else {
-        // If OTP is invalid
         return res.status(400).json({ success: false, message: 'Invalid OTP.' });
     }
 };

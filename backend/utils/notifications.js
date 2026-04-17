@@ -1,6 +1,5 @@
 import nodemailer from 'nodemailer';
 
-// Send Email Notification
 export const sendEmailNotification = async (to, subject, text) => {
   try {
     const transporter = nodemailer.createTransporter({
