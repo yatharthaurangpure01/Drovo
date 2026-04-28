@@ -33,12 +33,11 @@ const Add = () => {
         const value = event.target.value;
         setData(data => ({ ...data, [name]: value }));
 
-        // If food type changes, reset category 
         if (name === 'foodType') {
             setData({
                 ...data,
                 foodType: value,
-                category: shopCategories[value][0], // Reset to the first category for the selected food type
+                category: shopCategories[value][0],
             });
         }
     };

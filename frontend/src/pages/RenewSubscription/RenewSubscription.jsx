@@ -9,7 +9,7 @@ const RenewSubscription = () => {
     const { url, token, logout } = useContext(StoreContext);
     const navigate = useNavigate();
 
-    const [selectedPlan, setSelectedPlan] = useState('99'); 
+    const [selectedPlan, setSelectedPlan] = useState('99');
     const [isProcessingPayment, setIsProcessingPayment] = useState(false);
     const [isScriptLoading, setIsScriptLoading] = useState(false);
 
@@ -20,7 +20,6 @@ const RenewSubscription = () => {
         { price: '599', duration: '6 Months' },
     ];
 
-    // Load Razorpay script dynamically
     const loadRazorpayScript = async () => {
         setIsScriptLoading(true);
         const result = await new Promise((resolve) => {
@@ -34,7 +33,6 @@ const RenewSubscription = () => {
         return result;
     };
 
-    // Handle payment initiation
     const initiatePayment = async () => {
         if (!selectedPlan) {
             toast.error("Please select a subscription plan.");
@@ -44,7 +42,6 @@ const RenewSubscription = () => {
         try {
             setIsProcessingPayment(true);
 
-            // Create order from backend
             const response = await axios.post(`${url}/api/payment/createRenewalOrder`, {
                 amount: selectedPlan,
                 token,
@@ -112,7 +109,7 @@ const RenewSubscription = () => {
 
             if (verificationResponse.data.success) {
                 toast.success("Subscription renewed successfully!");
-                navigate('/'); 
+                navigate('/');
             } else {
                 toast.error("Payment verification failed.");
             }

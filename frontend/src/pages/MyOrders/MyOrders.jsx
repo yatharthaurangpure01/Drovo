@@ -8,11 +8,11 @@ import { useNavigate } from "react-router-dom";
 const MyOrders = () => {
   const { url, token, logout } = useContext(StoreContext);
   const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const fetchOrders = async () => {
-    setLoading(true); 
+    setLoading(true);
     try {
       const response = await axios.post(
         url + "/api/order/userorders",
@@ -28,7 +28,7 @@ const MyOrders = () => {
       }
       console.error("Error fetching orders:", error);
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
@@ -47,15 +47,15 @@ const MyOrders = () => {
   };
 
   const handleViewDetails = (orderId) => {
-    navigate(`/myorders/${orderId}`); 
+    navigate(`/myorders/${orderId}`);
   };
 
   const handleBack = () => {
-    navigate("/"); 
+    navigate("/");
   };
 
   const handleRefresh = () => {
-    fetchOrders(); 
+    fetchOrders();
   };
 
   // Skeleton Component
@@ -120,7 +120,6 @@ const MyOrders = () => {
                   <div className="order-header">
                     <img src={assetsAdmin.parcel_icon} alt="Order Icon" />
                     <h3>Order #{order._id.slice(-6)}</h3>{" "}
-                    {/* Display last 6 characters of Order ID */}
                   </div>
                   <div className="order-items">
                     <p>

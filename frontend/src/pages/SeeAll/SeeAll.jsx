@@ -2,16 +2,16 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import FoodItem from '../../components/FoodItem/FoodItem';
 import './SeeAll.css';
-import { StoreContext } from '../../context/storeContext'; 
+import { StoreContext } from '../../context/storeContext';
 import { assetsUser } from '../../assets/assetsUser';
 
 const SeeAll = () => {
     const location = useLocation();
     const { foodItems, shopId, title } = location.state || { foodItems: [], shopId: '', title: '' };
-    const [isAtTop, setIsAtTop] = useState(true); 
-    const [showCartIcon, setShowCartIcon] = useState(true); 
+    const [isAtTop, setIsAtTop] = useState(true);
+    const [showCartIcon, setShowCartIcon] = useState(true);
     const navigate = useNavigate();
-    const { getNumberOfItems } = useContext(StoreContext); 
+    const { getNumberOfItems } = useContext(StoreContext);
 
     const scrollToTop = () => {
         window.scrollTo({
@@ -22,17 +22,15 @@ const SeeAll = () => {
 
     const handleScroll = () => {
         if (window.scrollY === 0) {
-            setIsAtTop(true); 
+            setIsAtTop(true);
         } else {
-            setIsAtTop(false); 
+            setIsAtTop(false);
         }
     };
 
     useEffect(() => {
-        // Add scroll event listener
         window.addEventListener('scroll', handleScroll);
 
-        // Cleanup the event listener when the component unmounts
         return () => {
             window.removeEventListener('scroll', handleScroll);
         };
@@ -66,14 +64,12 @@ const SeeAll = () => {
                 </div>
             </div>
 
-            {/* Go to Top Button */}
             {!isAtTop && (
                 <button className="go-to-top-float" onClick={scrollToTop}>
                     ↑
                 </button>
             )}
 
-            {/* Floating Cart Icon */}
             {getNumberOfItems() > 0 && showCartIcon && (
                 <div className="floating-cart" onClick={() => navigate('/cart')}>
                     <div className="cart-counter">{getNumberOfItems()}</div>
@@ -83,7 +79,6 @@ const SeeAll = () => {
                 </div>
             )}
 
-            {/* Go Back Button */}
             <button className="go-back-button" onClick={() => navigate(-1)}>
                 Go Back
             </button>

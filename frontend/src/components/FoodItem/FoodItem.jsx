@@ -4,18 +4,15 @@ import { assetsUser } from '../../assets/assetsUser';
 import { StoreContext } from '../../context/storeContext';
 
 const FoodItem = ({ id, name, price, description, image, shopId, quantity, unit }) => {
-    const { cartItems, addToCart, removeFromCart, url } = useContext(StoreContext);
+    const { cartItems, addToCart, removeFromCart } = useContext(StoreContext);
 
-    // Access the cart for the current shop
-    const itemQuantity = cartItems[shopId]?.[id] || 0; // Default to 0 if no item exists
+    const itemQuantity = cartItems[shopId]?.[id] || 0;
 
-    // Calculate dynamic unit and quantity
     const calculateDynamicQuantity = () => {
-        const totalQuantity = itemQuantity * quantity; // Total quantity in base unit (e.g., grams or ml)
+        const totalQuantity = itemQuantity * quantity;
         let dynamicQuantity = totalQuantity;
         let dynamicUnit = unit;
 
-        // Convert grams to kg or ml to liter if applicable
         if (unit === 'grams' && totalQuantity >= 1000) {
             dynamicQuantity = (totalQuantity / 1000).toFixed(2);
             dynamicUnit = 'kg';
@@ -41,7 +38,7 @@ const FoodItem = ({ id, name, price, description, image, shopId, quantity, unit 
                         ? <button className='add-btn' onClick={() => addToCart(id, shopId)}>Add</button>
                         : <div className="food-item-counter">
                             <img onClick={() => removeFromCart(id, shopId)} src={assetsUser.remove_icon_red} alt="" />
-                            <p>{calculateDynamicQuantity()}</p> {/* Dynamic quantity is displayed here */}
+                            <p>{calculateDynamicQuantity()}</p>
                             <img onClick={() => addToCart(id, shopId)} src={assetsUser.add_icon_green} alt="" />
                         </div>
                 }

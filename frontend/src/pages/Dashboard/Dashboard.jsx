@@ -63,17 +63,16 @@ const Dashboard = () => {
         let token = localStorage.getItem('token');
         if (!token) return;
 
-        // Fetch orders
         const ordersResponse = await axios.post(`${url}/api/order/userorders`, {}, {
           headers: { token }
         });
 
         if (ordersResponse.data.success) {
           const orders = ordersResponse.data.data;
-          const totalRevenue = orders.reduce((sum, order) => 
+          const totalRevenue = orders.reduce((sum, order) =>
             order.status === "Delivered" ? sum + order.amount : sum, 0
           );
-          const pendingOrders = orders.filter(order => 
+          const pendingOrders = orders.filter(order =>
             order.status === "Food Processing" || order.status === "Out for delivery"
           ).length;
 
@@ -85,7 +84,6 @@ const Dashboard = () => {
           }));
         }
 
-        // Fetch food items
         const foodResponse = await axios.get(`${url}/api/food/list`);
         if (foodResponse.data.success) {
           setStats(prev => ({
@@ -103,7 +101,6 @@ const Dashboard = () => {
     fetchStats();
   }, [url, navigate, logout]);
 
-  // Dashboard Header Skeleton
   const DashboardHeaderSkeleton = () => (
     <div className="dashboard-header">
       <Skeleton height={32} width="250px" />
@@ -111,7 +108,6 @@ const Dashboard = () => {
     </div>
   );
 
-  // Stats Grid Skeleton
   const StatsGridSkeleton = () => (
     <div className="stats-grid">
       {[...Array(4)].map((_, index) => (
@@ -123,7 +119,6 @@ const Dashboard = () => {
     </div>
   );
 
-  // Shop Info Skeleton
   const ShopInfoSkeleton = () => (
     <div className="shop-info">
       <Skeleton height={20} width="150px" style={{ marginBottom: '20px' }} />
@@ -164,17 +159,17 @@ const Dashboard = () => {
           <div className="stat-number">{stats.totalOrders}</div>
           <div className="stat-label">Total Orders</div>
         </div>
-        
+
         <div className="stat-card">
           <div className="stat-number">{stats.totalItems}</div>
           <div className="stat-label">Menu Items</div>
         </div>
-        
+
         <div className="stat-card">
           <div className="stat-number">{stats.pendingOrders}</div>
           <div className="stat-label">Pending Orders</div>
         </div>
-        
+
         <div className="stat-card">
           <div className="stat-number">₹{stats.totalRevenue.toLocaleString()}</div>
           <div className="stat-label">Total Revenue</div>

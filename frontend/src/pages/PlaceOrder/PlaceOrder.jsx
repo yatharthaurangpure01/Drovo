@@ -4,7 +4,6 @@ import "./PlaceOrder.css";
 import { StoreContext } from "../../context/storeContext";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import { assetsUser } from "../../assets/assetsUser";
 import Loader from "../../components/Loader/Loader";
 import { Locate } from 'lucide-react';
 
@@ -117,6 +116,7 @@ const PlaceOrder = () => {
           const latitude = place.geometry.location.lat();
           const longitude = place.geometry.location.lng();
           let address = place.formatted_address || "";
+
           // Remove Plus Code from autocomplete address
           address = address.replace(/^[A-Z0-9+]+,\s*/, '').trim();
           setData((prevData) => ({
@@ -221,7 +221,7 @@ const PlaceOrder = () => {
       }, { headers: { token } });
 
       const { order } = response.data;
-      console.log("order", order)
+      // console.log("order", order);
       return order;
     } catch (error) {
       if (error.response?.status === 401 && error.response.data.message === 'Token expired') {
@@ -269,6 +269,7 @@ const PlaceOrder = () => {
             dynamicUnit = 'liter';
           }
 
+          // "5 liters" instead of "5.0 liters"
           const formattedQuantity = parseFloat(dynamicQuantity) % 1 === 0
             ? parseInt(dynamicQuantity, 10)
             : dynamicQuantity;

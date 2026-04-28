@@ -52,7 +52,7 @@
     padding: 0 15px;
 }
 
-.order-buttons .back-button,
+
 .order-buttons .refresh-button {
     display: flex;
     align-items: center;
@@ -66,9 +66,19 @@
     transition: color 0.3s ease, transform 0.3s ease;
 }
 
-.order-buttons .back-button .arrow-left {
-    font-size: 24px;
+.order-buttons .back-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    font-size: 16px;
+    color: #333;
 }
+
+
 
 .order-buttons .refresh-button .refresh-icon {
     width: 24px;
@@ -80,10 +90,7 @@
     transform: rotate(90deg);
 }
 
-.order-buttons .back-button:hover,
-.order-buttons .refresh-button:hover {
-    color: #0056b3;
-}
+
 
 .orders-container {
     display: grid;
@@ -175,6 +182,7 @@
     0% {
         background-position: 200% 0;
     }
+
     100% {
         background-position: -200% 0;
     }

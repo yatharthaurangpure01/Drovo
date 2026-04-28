@@ -26,7 +26,7 @@ const ShopDetails = () => {
         try {
             if (shopId) {
                 const response = await axios.get(`${url}/api/shops/${shopId}`);
-                console.log(response.data.data.shop);
+                //console.log(response.data.data.shop);
                 setShop(response.data.data.shop);
                 setFoodItems(response.data.data.foodItems);
                 setFilteredFoodItems(response.data.data.foodItems);
@@ -76,7 +76,6 @@ const ShopDetails = () => {
         }
     };
 
-    // Shop Info Skeleton Component
     const ShopInfoSkeleton = () => (
         <div className="shop-info-container">
             <Skeleton height={300} width={400} className="shop-detail-image" />
@@ -101,14 +100,12 @@ const ShopDetails = () => {
         </div>
     );
 
-    // Search Bar Skeleton
     const SearchBarSkeleton = () => (
         <div className="search-bar">
             <Skeleton height={50} width="100%" style={{ borderRadius: '30px' }} />
         </div>
     );
 
-    // Food Items Skeleton
     const FoodItemsSkeleton = () => (
         <div className="food-display-skeleton">
             {[...Array(6)].map((_, index) => (
@@ -122,7 +119,6 @@ const ShopDetails = () => {
         </div>
     );
 
-    // Shop Not Found Component
     const ShopNotFound = () => (
         <div className="shop-not-found">
             <Store size={80} className="shop-not-found-icon" />

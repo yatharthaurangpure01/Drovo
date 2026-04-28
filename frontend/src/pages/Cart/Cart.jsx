@@ -4,7 +4,7 @@ import { StoreContext } from '../../context/storeContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
-import { assetsUser } from '../../assets/assetsUser';
+import { ShoppingCart, Store, Trash } from 'lucide-react';
 
 const Cart = ({ setShowLogin }) => {
   const { cartItems, food_list, removeFromCart, addToCart, getTotalCartAmount, url, token, shopId, deleteFromCart, logout } = useContext(StoreContext);
@@ -55,7 +55,7 @@ const Cart = ({ setShowLogin }) => {
       return;
     }
 
-    navigate('/order');
+    navigate('/placeorder');
   };
 
   const getDisplayQuantity = (quantity, baseUnit) => {
@@ -83,13 +83,12 @@ const Cart = ({ setShowLogin }) => {
     <div className="cart-page">
       <div className="cart-header">
         <button className="back-btn" onClick={() => navigate(-1)}>
-          <span className="back-icon">←</span>
           Back
         </button>
         <h1>Your Cart</h1>
         {shopDetails && hasItemsInCart && (
           <div className="shop-badge">
-            <span className="shop-icon">🏪</span>
+            <Store />
             {shopDetails.name}
           </div>
         )}
@@ -97,7 +96,7 @@ const Cart = ({ setShowLogin }) => {
 
       {!hasItemsInCart ? (
         <div className="empty-cart">
-          <div className="empty-cart-icon">🛒</div>
+          <div className="empty-cart-icon"><ShoppingCart size={50} /></div>
           <h2>Your cart is empty</h2>
           <p>Add some delicious items to get started!</p>
           <button className="browse-btn" onClick={() => navigate('/')}>
@@ -116,7 +115,7 @@ const Cart = ({ setShowLogin }) => {
                     <div className="item-image">
                       <img src={item.image} alt={item.name} />
                     </div>
-                    
+
                     <div className="item-details">
                       <h3 className="cart-item-name">{item.name}</h3>
                       <p className="cart-item-price">₹{item.price}</p>
@@ -127,28 +126,28 @@ const Cart = ({ setShowLogin }) => {
 
                     <div className="item-controls">
                       <div className="quantity-controls">
-                        <button 
-                          className="quantity-btn minus" 
+                        <button
+                          className="quantity-btn minus"
                           onClick={() => removeFromCart(item._id, shopId)}
                         >
                           −
                         </button>
                         <span className="quantity-display">{itemQuantity}</span>
-                        <button 
-                          className="quantity-btn plus" 
+                        <button
+                          className="quantity-btn plus"
                           onClick={() => addToCart(item._id, shopId)}
                         >
                           +
                         </button>
                       </div>
-                      
+
                       <div className="item-total">₹{item.price * itemQuantity}</div>
-                      
-                      <button 
-                        className="remove-btn" 
+
+                      <button
+                        className="remove-btn"
                         onClick={() => deleteFromCart(item._id, shopId)}
                       >
-                        🗑️
+                        <Trash />
                       </button>
                     </div>
                   </div>
@@ -161,12 +160,12 @@ const Cart = ({ setShowLogin }) => {
           <div className="cart-summary">
             <div className="promo-section">
               <div className="promo-input-group">
-                <input 
-                  type="text" 
-                  placeholder="Enter promo code" 
-                  value={promoCode} 
-                  onChange={(e) => setPromoCode(e.target.value)} 
-                  className="promo-input" 
+                <input
+                  type="text"
+                  placeholder="Enter promo code"
+                  value={promoCode}
+                  onChange={(e) => setPromoCode(e.target.value)}
+                  className="promo-input"
                 />
                 <button onClick={handlePromoCode} className="promo-btn">
                   Apply
@@ -175,7 +174,7 @@ const Cart = ({ setShowLogin }) => {
             </div>
 
             <div className="total-section">
-             
+
               <div className="total-row final-total">
                 <span>Total</span>
                 <span>₹{getTotalCartAmount()}</span>

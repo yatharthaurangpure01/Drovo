@@ -1,22 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import './FoodDisplay.css';
 import FoodItem from '../FoodItem/FoodItem';
-import Skeleton from 'react-loading-skeleton'; // Skeleton loader
+import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import { Link } from 'react-router-dom';
 
 const FoodDisplay = ({ foodItems, shopId, isSearching }) => {
-    const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setLoading(false);
-        }, 1000);
+    /*  
+        Group food items by category
+        
+        Before
+        const foodItems = [
+        { name: 'Apple', category: 'Fruits' },
+        { name: 'Carrot', category: 'Vegetables' },
+        { name: 'Banana', category: 'Fruits' }
+    ];
 
-        return () => clearTimeout(timer);
-    }, [foodItems]);
+    After
+    {
+        'Fruits': [
+            { name: 'Apple', category: 'Fruits' },
+            { name: 'Banana', category: 'Fruits' }
+        ],
+        'Vegetables': [
+            { name: 'Carrot', category: 'Vegetables' }
+        ]
+    }
 
-    // Group food items by category
+    */
+
     const groupedItems = foodItems.reduce((acc, item) => {
         if (!acc[item.category]) {
             acc[item.category] = [];
@@ -28,8 +41,8 @@ const FoodDisplay = ({ foodItems, shopId, isSearching }) => {
     // Merge categories with fewer items
     const threshold = 4; // Define the minimum number of items per category
     const mergedCategories = [];
-    const smallCategories = []; // Collect all small categories
-    const largeCategories = []; // Collect all large categories
+    const smallCategories = [];
+    const largeCategories = [];
 
     Object.keys(groupedItems).forEach((category) => {
         const items = groupedItems[category];
@@ -86,7 +99,7 @@ const FoodDisplay = ({ foodItems, shopId, isSearching }) => {
         <div className="food-display">
             {loading ? (
                 <div className="food-display-loading">
-                    {Array(2) // Two categories as skeletons
+                    {Array(2)
                         .fill(null)
                         .map((_, categoryIndex) => (
                             <div key={categoryIndex} className="food-category-skeleton">
@@ -97,7 +110,7 @@ const FoodDisplay = ({ foodItems, shopId, isSearching }) => {
                                 </div>
                                 {/* Skeleton for food items */}
                                 <div className="food-category-items-skeleton">
-                                    {Array(4) // Four food items per category
+                                    {Array(4)
                                         .fill(null)
                                         .map((_, itemIndex) => (
                                             <div key={itemIndex} className="food-item-skeleton">

@@ -1,14 +1,11 @@
-import LoginPopup from "../../components/LoginPopup/LoginPopup";
 import { useContext, useEffect, useState, useRef, useCallback } from "react";
 import "./Home.css";
-import Header from "../../components/NavbarUser/Header/Header";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { StoreContext } from "../../context/storeContext";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { assetsUser } from "../../assets/assetsUser";
-import Testimonials from "../../components/Testimonials/StatsAndTestimonials";
 import { toast } from "react-hot-toast";
 import { MapPin } from "lucide-react";
 import StatsAndTestimonials from "../../components/Testimonials/StatsAndTestimonials";
@@ -26,7 +23,7 @@ const Home = ({ setShowLogin }) => {
   const [address, setAddress] = useState("");
   const { url, logout } = useContext(StoreContext);
   const shopSectionRef = useRef(null);
-  const partnerSectionRef = useRef(null); 
+  const partnerSectionRef = useRef(null);
 
   const handleHeroImageLoad = () => {
     setHeroImageLoaded(true);
@@ -35,11 +32,14 @@ const Home = ({ setShowLogin }) => {
   const fetchShops = useCallback(
     async (latitude, longitude, radius = 10) => {
       try {
+
         const params =
           latitude && longitude ? { latitude, longitude, radius } : {};
+
         const response = await axios.get(`${url}/api/shops/all`, { params });
         console.log(response.data.data);
         setShops(response.data.data);
+
         if (latitude && longitude && response.data.data.length === 0) {
           setLocationError(
             `No shops available within ${radius} km of your location.`
@@ -47,6 +47,7 @@ const Home = ({ setShowLogin }) => {
         } else {
           setLocationError("");
         }
+
       } catch (error) {
         if (error.response && error.response.status === 401) {
           if (error.response.data.message === "Token expired") {
@@ -64,6 +65,7 @@ const Home = ({ setShowLogin }) => {
   );
 
   const getCurrentLocation = () => {
+
     if (navigator.geolocation) {
       setLoading(true);
       navigator.geolocation.getCurrentPosition(
@@ -114,13 +116,18 @@ const Home = ({ setShowLogin }) => {
         `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${import.meta.env.VITE_GOOGLE_MAPS_API
         }`
       );
+
       if (response.data.status === "OK") {
+
         let formattedAddress = response.data.results[0].formatted_address;
-        // Remove Plus Code (e.g., "43PP+37X, ") from the start of the address
+
+        // Removing Plus Code (e.g., "43PP+37X, ") from the start of the address
         formattedAddress = formattedAddress
           .replace(/^[A-Z0-9+]+,\s*/, "")
           .trim();
+
         setAddress(formattedAddress);
+
       } else {
         const errorMessage = "Unable to fetch address from coordinates.";
         setLocationError(errorMessage);
@@ -138,6 +145,7 @@ const Home = ({ setShowLogin }) => {
 
     if (!userLocation.latitude && !userLocation.longitude) {
       const location = JSON.parse(localStorage.getItem("Location"));
+
       if (location) {
         userLocation.latitude = location.latitude;
         userLocation.longitude = location.longitude;
@@ -151,6 +159,7 @@ const Home = ({ setShowLogin }) => {
 
   useEffect(() => {
     if (window.google) {
+
       const input = document.getElementById("address-autocomplete");
       const autocomplete = new window.google.maps.places.Autocomplete(input, {
         types: ["address"],
@@ -159,19 +168,23 @@ const Home = ({ setShowLogin }) => {
 
       autocomplete.addListener("place_changed", () => {
         const place = autocomplete.getPlace();
+
         if (place.geometry) {
           const latitude = place.geometry.location.lat();
           const longitude = place.geometry.location.lng();
+
           let formattedAddress = place.formatted_address;
           // Remove Plus Code from autocomplete address
           formattedAddress = formattedAddress
             .replace(/^[A-Z0-9+]+,\s*/, "")
             .trim();
+
           setUserLocation({ latitude, longitude });
           localStorage.setItem(
             "Location",
             JSON.stringify({ latitude, longitude })
           );
+
           setAddress(formattedAddress);
           fetchShops(latitude, longitude);
         } else {
@@ -187,7 +200,6 @@ const Home = ({ setShowLogin }) => {
     shopSectionRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // Add function to scroll to partner section
   const scrollToPartnerSection = () => {
     partnerSectionRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -202,13 +214,11 @@ const Home = ({ setShowLogin }) => {
         locationInput.scrollIntoView({ behavior: "smooth", block: "center" });
       }
     } else {
-      // Scroll to shops section if location is already set
       scrollToShops();
     }
   };
 
   const handleJoinDrovo = () => {
-    // Scroll to partner section instead of shops section
     scrollToPartnerSection();
   };
 
@@ -262,8 +272,8 @@ const Home = ({ setShowLogin }) => {
           </div>
           <div className="hero-image">
             {!heroImageLoaded && <Loader />}
-            <img 
-              src={assetsUser.deliveryBoy} 
+            <img
+              src={assetsUser.deliveryBoy}
               alt="Food Delivery"
               onLoad={handleHeroImageLoad}
             />
@@ -361,7 +371,6 @@ const Home = ({ setShowLogin }) => {
         </div>
       </div>
 
-      {/* <Header /> */}
 
       <StatsAndTestimonials />
 
