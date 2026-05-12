@@ -1,17 +1,14 @@
 import jwt from 'jsonwebtoken';
 import Shop from '../models/ShopModel.js';
 
-// Middleware to protect shop routes
 const shopAuthMiddleware = async (req, res, next) => {
     const { token } = req.headers;
-    // console.log(req)
 
     if (!token) {
         return res.status(401).json({ success: false, message: "No token provided" });
     }
 
     try {
-        // Decode the token and extract the shopId
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const shopId = decoded.id;
 
@@ -43,8 +40,8 @@ const shopAuthMiddleware = async (req, res, next) => {
             });
         }
 
-        req.shop = shop; 
-        next(); 
+        req.shop = shop;
+        next();
     } catch (error) {
         console.error("Token verification failed:", error);
         if (error.name === 'TokenExpiredError') {

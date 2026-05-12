@@ -19,7 +19,6 @@ const getShopIdFromToken = (token) => {
   }
 };
 
-// Add food item
 const addFood = async (req, res) => {
   const { name, description, price, category, quantity, unit, image } = req.body;
   const { token } = req.headers;
@@ -61,7 +60,6 @@ const addFood = async (req, res) => {
   }
 };
 
-// Edit food item
 const editFood = async (req, res) => {
   const { id } = req.params;
   const { name, description, price, category, unit, quantity, image } = req.body;
@@ -81,12 +79,12 @@ const editFood = async (req, res) => {
           const urlParts = foodItem.image.split('/');
           const uploadIndex = urlParts.findIndex(part => part === 'upload');
           if (uploadIndex === -1) throw new Error("Invalid Cloudinary URL");
+
           const versionIndex = urlParts[uploadIndex + 1].startsWith('v') ? uploadIndex + 2 : uploadIndex + 1;
           const publicId = urlParts.slice(versionIndex).join('/').split('.')[0];
           await cloudinary.v2.uploader.destroy(`drovo/food/${publicId}`);
         } catch (error) {
           console.warn("Failed to delete old image from Cloudinary:", error.message);
-          // Continue with update even if deletion fails
         }
       }
       // Upload new image
@@ -116,7 +114,6 @@ const editFood = async (req, res) => {
   }
 };
 
-// List food items
 const listFood = async (req, res) => {
   const { token } = req.headers;
   const { shopId: shopIdFromUrl } = req.params;
@@ -141,7 +138,7 @@ const listFood = async (req, res) => {
   }
 };
 
-// Get single food item
+// Get single food iftem
 const giveFood = async (req, res) => {
   const { id } = req.params;
 
@@ -178,7 +175,7 @@ const removeFood = async (req, res) => {
         const urlParts = food.image.split('/');
         const uploadIndex = urlParts.findIndex(part => part === 'upload');
         if (uploadIndex === -1) throw new Error("Invalid Cloudinary URL");
-        const versionIndex = urlParts[uploadIndex + 1].startsWith('v') ? uploadIndex + 2 : uploadIndex + 1-tip;
+        const versionIndex = urlParts[uploadIndex + 1].startsWith('v') ? uploadIndex + 2 : uploadIndex + 1 - tip;
         const publicId = urlParts.slice(versionIndex).join('/').split('.')[0];
         await cloudinary.v2.uploader.destroy(`drovo/food/${publicId}`);
       } catch (error) {

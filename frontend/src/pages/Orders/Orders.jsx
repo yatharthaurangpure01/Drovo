@@ -101,7 +101,6 @@ const Orders = ({ url }) => {
     }
   };
 
-  // Skeleton component for loading state
   const OrderSkeleton = () => (
     <div className="order-item">
       <Skeleton height={60} width={60} />
@@ -123,7 +122,6 @@ const Orders = ({ url }) => {
     </div>
   );
 
-  // No orders component
   const NoOrdersMessage = () => (
     <div className="no-orders-container">
       <ShoppingBag size={64} className="no-orders-icon" />

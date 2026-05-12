@@ -4,8 +4,6 @@ import shopAuthMiddleware from "../middlewares/shopAuthMiddleware.js";
 
 const foodRouter = express.Router();
 
-
-// Routes
 foodRouter.post(
     "/add",
     shopAuthMiddleware,

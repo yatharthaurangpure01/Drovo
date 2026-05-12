@@ -27,8 +27,8 @@ const getShopIdFromToken = (token) => {
 const createOrder = async (req, res) => {
   const { amount, deliveryCharge, token, shopId } = req.body;
 
-  console.log("amount ", typeof amount);
-  console.log("deliveryCharge ", typeof deliveryCharge);
+  // console.log("amount ", typeof amount);
+  // console.log("deliveryCharge ", typeof deliveryCharge);
   if (!token || !shopId) {
     return res.status(401).json({ success: false, message: 'Unauthorized request or missing shopId' });
   }
@@ -40,10 +40,10 @@ const createOrder = async (req, res) => {
     }
 
     const totalAmount = (amount + deliveryCharge) * 100; // Convert to paise
-    console.log("totalAmount ", totalAmount);
+    // console.log("totalAmount ", totalAmount);
     const shopAmount = Math.round(totalAmount * 0.99); // 99% to shopkeeper
     const platformCommission = totalAmount - shopAmount; // 1% to platform
-    console.log("shopAmount ", shopAmount)
+    // console.log("shopAmount ", shopAmount)
     const options = {
       amount: totalAmount,
       currency: 'INR',
@@ -65,7 +65,7 @@ const createOrder = async (req, res) => {
     res.status(200).json({
       success: true,
       order,
-      platformCommission // Return commission for tracking
+      platformCommission
     });
   } catch (error) {
     console.error('Error creating Razorpay order:', error);

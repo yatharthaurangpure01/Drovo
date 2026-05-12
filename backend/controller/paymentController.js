@@ -86,7 +86,7 @@ const retry = async (fn, retries = 3, delay = 1000) => {
 const shopPayment = async (req, res) => {
   const { amount, token } = req.body;
 
-  console.log("amount ", amount);
+  // console.log("amount ", amount);
   if (!token) {
     return res
       .status(401)

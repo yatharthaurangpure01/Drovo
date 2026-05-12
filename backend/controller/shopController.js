@@ -11,9 +11,9 @@ const getDistance = (lat1, lon1, lat2, lon2) => {
   const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
     Math.cos(toRad(lat1)) *
-      Math.cos(toRad(lat2)) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
+    Math.cos(toRad(lat2)) *
+    Math.sin(dLon / 2) *
+    Math.sin(dLon / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c; // Distance in km
 };
@@ -23,7 +23,6 @@ const shopDetails = async (req, res) => {
     const { token } = req.headers;
     let shopId = getShopIdFromToken(token);
 
-    // Fetch the shop details by ID
     const shop = await Shop.findById(shopId);
 
     if (!shop) {
@@ -86,7 +85,7 @@ const fetchAllShops = async (req, res) => {
       });
     }
 
-    console.log("Shops ", shops);
+    // console.log("Shops ", shops);
 
     res.status(200).json({
       success: true,
@@ -106,7 +105,6 @@ const findShop = async (req, res) => {
   const { shopId } = req.params;
 
   try {
-    // Fetch the shop details by ID
     const shop = await Shop.findById(shopId);
 
     if (!shop) {
@@ -116,10 +114,8 @@ const findShop = async (req, res) => {
       });
     }
 
-    // Fetch all food items associated with this shop
     const foodItems = await foodModel.find({ shop: shopId });
 
-    // Return shop coordinates (latitude and longitude)
     const coordinates = {
       lat: shop.shopAddress.latitude,
       lng: shop.shopAddress.longitude,
@@ -143,3 +139,6 @@ const findShop = async (req, res) => {
 };
 
 export { fetchAllShops, findShop, shopDetails };
+
+
+

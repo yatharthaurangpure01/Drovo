@@ -21,7 +21,6 @@ connectDB();
 
 app.use("/api/food", foodRouter);
 app.use("/api", userRouter);
-app.use("/api/cart", cartRouter);
 app.use("/api/order", orderRouter);
 app.use("/api/payment", paymentRouter);
 app.use('/api/shops', shopRouter);
@@ -33,4 +32,3 @@ app.get("/", (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server Started on http://localhost:${PORT}`);
 })
-
