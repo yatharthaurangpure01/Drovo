@@ -139,6 +139,3 @@ const findShop = async (req, res) => {
 };
 
 export { fetchAllShops, findShop, shopDetails };
-
-
-
